@@ -1,0 +1,32 @@
+{
+  "name": "claude-code-desktop-pet",
+  "version": "1.0.0",
+  "description": "Claude Code floating desktop pet",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron . --no-sandbox",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.anthropic.claude-code-pet",
+    "productName": "Claude Code Pet",
+    "files": [
+      "src/**/*",
+      "assets/**/*"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

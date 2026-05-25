@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="pet.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 150px;
+      height: 150px;
+      background: transparent;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="pet-container">
+    <div id="pet" class="state-idle">
+      <div class="claude-mascot">
+        <div class="arm arm-0"></div>
+        <div class="arm arm-1"></div>
+        <div class="arm arm-2"></div>
+        <div class="face">
+          <div class="eyes">
+            <div class="eye eye-l"></div>
+            <div class="eye eye-r"></div>
+          </div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <div class="shadow"></div>
+    </div>
+    <div id="speech-bubble" class="hidden"></div>
+  </div>
+  <script src="pet.js"></script>
+</body>
+</html>
