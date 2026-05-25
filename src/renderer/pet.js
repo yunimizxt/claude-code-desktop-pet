@@ -8,14 +8,26 @@ const STATES = {
   ERROR:   'error',
   WAVE:    'wave',
   JUMP:    'jump',
+  SLEEP:   'sleep',
+}
+
+const SPRITES = {
+  [STATES.IDLE]:    '../../assets/sprites/clawd-idle.gif',
+  [STATES.WORKING]: '../../assets/sprites/clawd-building.gif',
+  [STATES.WAITING]: '../../assets/sprites/clawd-thinking.gif',
+  [STATES.SUCCESS]: '../../assets/sprites/clawd-happy.gif',
+  [STATES.ERROR]:   '../../assets/sprites/clawd-error.gif',
+  [STATES.WAVE]:    '../../assets/sprites/clawd-mini-happy.gif',
+  [STATES.JUMP]:    '../../assets/sprites/clawd-react-double-jump.gif',
+  [STATES.SLEEP]:   '../../assets/sprites/clawd-sleeping.gif',
 }
 
 // States that auto-return to idle after a timeout
 const TRANSIENT = {
   [STATES.SUCCESS]: 3000,
   [STATES.ERROR]:   3000,
-  [STATES.WAVE]:    2000,
-  [STATES.JUMP]:    1500,
+  [STATES.WAVE]:    2500,
+  [STATES.JUMP]:    2000,
 }
 
 // Maps status strings from Claude Code / pet-status.json
@@ -28,6 +40,8 @@ const STATUS_MAP = {
   done:     STATES.SUCCESS,
   error:    STATES.ERROR,
   failed:   STATES.ERROR,
+  sleep:    STATES.SLEEP,
+  sleeping: STATES.SLEEP,
 }
 
 const SPEECH = {
@@ -37,11 +51,12 @@ const SPEECH = {
   [STATES.ERROR]:   'Oops!',
   [STATES.WAVE]:    'Hi!',
   [STATES.JUMP]:    'Woo!',
+  [STATES.SLEEP]:   'zzz...',
 }
 
 class PetStateMachine {
-  constructor(petEl, bubbleEl) {
-    this.petEl = petEl
+  constructor(imgEl, bubbleEl) {
+    this.imgEl = imgEl
     this.bubbleEl = bubbleEl
     this.current = null
     this.returnTimer = null
@@ -52,12 +67,8 @@ class PetStateMachine {
     if (this.current === newState) return
     clearTimeout(this.returnTimer)
 
-    for (const s of Object.values(STATES)) {
-      this.petEl.classList.remove(`state-${s}`)
-    }
-
     this.current = newState
-    this.petEl.classList.add(`state-${newState}`)
+    this.imgEl.src = SPRITES[newState]
 
     if (this.bubbleEl) {
       const text = SPEECH[newState]
@@ -78,12 +89,13 @@ class PetStateMachine {
 // --- Init ---
 
 document.addEventListener('DOMContentLoaded', () => {
-  const petEl = document.getElementById('pet')
+  const imgEl = document.getElementById('clawd')
   const bubbleEl = document.getElementById('speech-bubble')
-  const pet = new PetStateMachine(petEl, bubbleEl)
+  const pet = new PetStateMachine(imgEl, bubbleEl)
 
   // --- Mouse hover: toggle click-through in main process ---
 
+  const petEl = document.getElementById('pet')
   let isMouseOver = false
   let isDragging = false
 
@@ -107,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.button !== 0) return
     isDragging = true
     didMove = false
-    // clientX/Y is the cursor position inside this 150x150 window
     dragOffsetX = e.clientX
     dragOffsetY = e.clientY
     e.preventDefault()
@@ -116,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return
     didMove = true
-    // screenX/Y is absolute screen position; subtract initial offset to get window top-left
     window.petAPI.drag(e.screenX - dragOffsetX, e.screenY - dragOffsetY)
   })
 
@@ -126,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isMouseOver) window.petAPI.mouseLeave()
   })
 
-  // --- Click interactions (debounce single vs double click) ---
+  // --- Click interactions ---
 
   let singleClickTimer = null
 

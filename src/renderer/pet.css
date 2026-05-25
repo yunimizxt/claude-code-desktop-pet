@@ -1,8 +1,8 @@
 /* ===== Layout ===== */
 
 #pet-container {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,297 +18,35 @@
   align-items: center;
 }
 
-/* ===== Claude Asterisk Mascot ===== */
+/* ===== Claw'd sprite ===== */
 
-.claude-mascot {
-  position: relative;
-  width: 90px;
-  height: 90px;
-}
-
-/* Three pill shapes at 0°/60°/120° form the 6-armed asterisk (Anthropic logo) */
-.arm {
-  position: absolute;
-  width: 15px;
-  height: 76px;
-  border-radius: 7.5px;
-  background: linear-gradient(
-    to bottom,
-    #a85540 0%,
-    #cc785c 30%,
-    #d98c70 50%,
-    #cc785c 70%,
-    #a85540 100%
-  );
-  left: calc(50% - 7.5px);
-  top: calc(50% - 38px);
-  transform-origin: center center;
-}
-
-.arm-0 { transform: rotate(0deg); }
-.arm-1 { transform: rotate(60deg); }
-.arm-2 { transform: rotate(120deg); }
-
-/* Face elements rendered above the arms */
-.face {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + 2px);
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.eyes {
-  display: flex;
-  gap: 9px;
-}
-
-.eye {
-  width: 8px;
-  height: 10px;
-  background: #fff;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-}
-
-.eye::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  height: 5px;
-  background: #2a1208;
-  border-radius: 50%;
-  left: 2px;
-  top: 3px;
-}
-
-.mouth {
-  width: 14px;
-  height: 7px;
-  border-bottom: 2.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: 0 0 8px 8px;
+#clawd {
+  width: 160px;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
 }
 
 /* Grounding shadow */
 .shadow {
-  width: 50px;
-  height: 8px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22) 0%, transparent 70%);
+  width: 80px;
+  height: 10px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.28) 0%, transparent 70%);
   border-radius: 50%;
-  margin-top: 3px;
-}
-
-/* ===== IDLE: gentle breathing float ===== */
-
-#pet.state-idle .claude-mascot {
-  animation: breathe 3.5s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1) translateY(0); }
-  50%       { transform: scale(1.04) translateY(-3px); }
-}
-
-#pet.state-idle .shadow {
-  animation: shadow-breathe 3.5s ease-in-out infinite;
-}
-
-@keyframes shadow-breathe {
-  0%, 100% { transform: scaleX(1); opacity: 1; }
-  50%       { transform: scaleX(0.85); opacity: 0.7; }
-}
-
-#pet.state-idle .eye {
-  animation: idle-blink 5s ease-in-out infinite;
-}
-
-@keyframes idle-blink {
-  0%, 82%, 100% { transform: scaleY(1); }
-  87%            { transform: scaleY(0.08); }
-}
-
-/* ===== WORKING: continuous spin with counter-rotating face ===== */
-
-#pet.state-working .claude-mascot {
-  animation: spin 1.1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-#pet.state-working .face {
-  animation: counter-spin 1.1s linear infinite;
-}
-
-@keyframes counter-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(-360deg); }
-}
-
-#pet.state-working .arm {
-  background: linear-gradient(
-    to bottom,
-    #a05030 0%,
-    #e07840 30%,
-    #f09858 50%,
-    #e07840 70%,
-    #a05030 100%
-  );
-}
-
-/* ===== WAITING: slow bob + periodic blink ===== */
-
-#pet.state-waiting .claude-mascot {
-  animation: slow-bob 2.4s ease-in-out infinite;
-}
-
-@keyframes slow-bob {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%       { transform: translateY(-7px) scale(1.02); }
-}
-
-#pet.state-waiting .shadow {
-  animation: shadow-bob 2.4s ease-in-out infinite;
-}
-
-@keyframes shadow-bob {
-  0%, 100% { transform: scaleX(1); opacity: 1; }
-  50%       { transform: scaleX(0.7); opacity: 0.5; }
-}
-
-#pet.state-waiting .eye {
-  animation: wait-blink 2.8s ease-in-out infinite;
-}
-
-@keyframes wait-blink {
-  0%, 78%, 100% { transform: scaleY(1); }
-  84%            { transform: scaleY(0.08); }
-}
-
-/* ===== SUCCESS: happy double-jump + green arms ===== */
-
-#pet.state-success .claude-mascot {
-  animation: success-jump 0.65s ease-out 0s 2 both;
-}
-
-@keyframes success-jump {
-  0%   { transform: translateY(0) scale(1); }
-  28%  { transform: translateY(-22px) scale(1.12); }
-  52%  { transform: translateY(-6px) scale(1.05); }
-  76%  { transform: translateY(-15px) scale(1.09); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-#pet.state-success .arm {
-  background: linear-gradient(
-    to bottom,
-    #5a9e28 0%,
-    #78c040 30%,
-    #90d858 50%,
-    #78c040 70%,
-    #5a9e28 100%
-  );
-  transition: background 0.25s;
-}
-
-#pet.state-success .mouth {
-  border-bottom-color: #90d858;
-  width: 18px;
-  transition: width 0.2s;
-}
-
-/* ===== ERROR: shake + red arms + sad mouth ===== */
-
-#pet.state-error .claude-mascot {
-  animation: error-shake 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-@keyframes error-shake {
-  0%, 100% { transform: translateX(0) rotate(0deg); }
-  14%       { transform: translateX(-7px) rotate(-3deg); }
-  28%       { transform: translateX(7px) rotate(3deg); }
-  42%       { transform: translateX(-5px) rotate(-2deg); }
-  57%       { transform: translateX(5px) rotate(2deg); }
-  72%       { transform: translateX(-3px); }
-  86%       { transform: translateX(3px); }
-}
-
-#pet.state-error .arm {
-  background: linear-gradient(
-    to bottom,
-    #9e1818 0%,
-    #d03030 30%,
-    #e84848 50%,
-    #d03030 70%,
-    #9e1818 100%
-  );
-  transition: background 0.2s;
-}
-
-#pet.state-error .mouth {
-  border-bottom: none;
-  border-top: 2.5px solid rgba(255, 255, 255, 0.85);
-  border-radius: 8px 8px 0 0;
-  margin-top: 3px;
-}
-
-/* ===== WAVE: body rock + arm glow ===== */
-
-#pet.state-wave .claude-mascot {
-  animation: wave-rock 0.42s ease-in-out infinite alternate;
-  transform-origin: center bottom;
-}
-
-@keyframes wave-rock {
-  from { transform: rotate(-9deg) scale(1); }
-  to   { transform: rotate(9deg) scale(1.03); }
-}
-
-#pet.state-wave .arm {
-  filter: drop-shadow(0 0 6px rgba(204, 120, 92, 0.85));
-}
-
-/* ===== JUMP: big flip ===== */
-
-#pet.state-jump .claude-mascot {
-  animation: big-jump 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-@keyframes big-jump {
-  0%   { transform: translateY(0) rotate(0deg) scale(1); }
-  22%  { transform: translateY(-28px) rotate(120deg) scale(1.15); }
-  45%  { transform: translateY(-38px) rotate(240deg) scale(1.2); }
-  68%  { transform: translateY(-18px) rotate(340deg) scale(1.08); }
-  100% { transform: translateY(0) rotate(360deg) scale(1); }
-}
-
-#pet.state-jump .shadow {
-  animation: shadow-jump 0.85s ease-out both;
-}
-
-@keyframes shadow-jump {
-  0%, 100% { transform: scaleX(1); opacity: 1; }
-  45%       { transform: scaleX(0.5); opacity: 0.3; }
+  margin-top: -6px;
 }
 
 /* ===== Speech Bubble ===== */
 
 #speech-bubble {
   position: absolute;
-  top: 4px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.93);
   border-radius: 10px;
-  padding: 3px 9px;
+  padding: 3px 10px;
   font-size: 11px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   font-weight: 600;

@@ -6,8 +6,8 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      width: 150px;
-      height: 150px;
+      width: 200px;
+      height: 200px;
       background: transparent;
       overflow: hidden;
       user-select: none;
@@ -17,19 +17,8 @@
 </head>
 <body>
   <div id="pet-container">
-    <div id="pet" class="state-idle">
-      <div class="claude-mascot">
-        <div class="arm arm-0"></div>
-        <div class="arm arm-1"></div>
-        <div class="arm arm-2"></div>
-        <div class="face">
-          <div class="eyes">
-            <div class="eye eye-l"></div>
-            <div class="eye eye-r"></div>
-          </div>
-          <div class="mouth"></div>
-        </div>
-      </div>
+    <div id="pet">
+      <img id="clawd" src="../../assets/sprites/clawd-idle.gif" alt="Claw'd" draggable="false">
       <div class="shadow"></div>
     </div>
     <div id="speech-bubble" class="hidden"></div>
