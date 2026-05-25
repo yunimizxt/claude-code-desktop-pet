@@ -5,7 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron . --no-sandbox",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "setup": "node scripts/setup-hooks.js"
   },
   "devDependencies": {
     "electron": "^32.0.0",
