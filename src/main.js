@@ -145,7 +145,7 @@ function createTray() {
   })
 }
 
-// --- Claude Code status integration ---
+// --- Claude Code CLI integration (watches ~/.claude/pet-status.json) ---
 
 function watchStatusFile() {
   const statusPath = path.join(os.homedir(), '.claude', 'pet-status.json')
@@ -157,6 +157,45 @@ function watchStatusFile() {
       } catch {}
     })
   } catch {}
+}
+
+// --- Browser integration (HTTP server on localhost:7421) ---
+// Accepts POST /status { "status": "running"|"done"|... } from the userscript
+
+function createLocalServer() {
+  const http = require('http')
+
+  const server = http.createServer((req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204)
+      res.end()
+      return
+    }
+
+    if (req.method === 'POST' && req.url === '/status') {
+      let body = ''
+      req.on('data', chunk => { body += chunk })
+      req.on('end', () => {
+        try {
+          const data = JSON.parse(body)
+          if (win && !win.isDestroyed()) win.webContents.send('status:update', data)
+        } catch {}
+        res.writeHead(200)
+        res.end('ok')
+      })
+      return
+    }
+
+    res.writeHead(404)
+    res.end()
+  })
+
+  server.listen(7421, '127.0.0.1')
+  server.on('error', () => {}) // silently ignore port conflicts
 }
 
 // --- IPC handlers ---
@@ -183,6 +222,7 @@ app.whenReady().then(() => {
   createWindow()
   createTray()
   watchStatusFile()
+  createLocalServer()
 })
 
 app.on('window-all-closed', () => {
